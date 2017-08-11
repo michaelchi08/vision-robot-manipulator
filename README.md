@@ -16,12 +16,14 @@
 
 Robot Arm:
 
-![alt text][image_cover]
+<p align="center">
+  <img src="./misc/cover.png" width="350"/>
+</p>
 
 The Goal of this project is to design a 6 DOF arm and to develop algorithms for effective task completion under time constraints as well as navigation requirement to determine best possible path. This is achieved by initially constructing a 3D location via Kinect RGBD camera that records synchronized and aligned RGB, depth images. Blob detection computer vision technique is used to locate different blocks. We design three different inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirement.
 
 
-## Task
+## Tasks
 
 **Event 1**: Pick n’ place (100 points)
 
@@ -73,11 +75,15 @@ The Goal of this project is to design a 6 DOF arm and to develop algorithms for 
 
 Hardware Architecture:
 
-![alt text][image_hardware]
+<p align="center">
+  <img src="./misc/hardware.png" width="550"/>
+</p>
 
 Hardware Connection:
 
-![alt text][image_hardware2] 
+<p align="center">
+  <img src="./misc/hardware2.png" width="550"/>
+</p>
 
 ## Software Architecture
 
@@ -91,15 +97,17 @@ The software system could manipulate several robotics corporately in one or seve
 
 Software Architecture:
 
-![alt text][image_multi_process_structure] 
+<p align="center">
+  <img src="./misc/multi_process_structure.png"/>
+</p>
 
 The master process first creates a thread to initialize worker communication channel parameters and start a thread to build all the worker processes. Then the master will start job job listen thread to listen signals from worker process, and heartbeat listen thread to listen heartbeat from worker process. When master process creates new worker processes, these new processes start their own heartbeat thread, and keep listening on master TCP channel to receive command. Once worker process receives task command, they will execute these tasks and send task status feedback signal to master TCP listener. 
 
 Functions logic chart:
 
-![alt text][image_multi_function_chart] 
-
-[Python main function](https://github.com/AaronWzh/vision_arm_robot/tree/master/rexarm_python). 
+<p align="center">
+  <img src="./misc/multi_function_chart.JPG"/>
+</p>
 
 This system is able to run any job on our machine, using a actuator function (in this project, it is just motor control command) implementation.
 
@@ -128,7 +136,9 @@ State machine is implemented in master process, and it is for block picking and 
 
 Decision making logic block:
 
-![alt text][image_decision_making] 
+<p align="center">
+  <img src="./misc/decision_making.png"/>
+</p>
 
 The master process level (in red box) decide the structure of one complete step move:
 ##### 1) From initial location (zero point) go to the block location
@@ -162,6 +172,7 @@ Gripper is a very important part of design to do tasks efficiently. We designed 
 
 Gripper No.1:
 
+
 ![alt text][image_gripper]
 
 The four bar one can always be parallel to the blocks easily for us to calibrate the grasp and drop angle. And the claw can move forward when gripping, which can compensate the tolerance of localization. But during the experimentation, we find out that XL-320 motor has very limited torque and OLLO rivet and hole mate are generating relatively large friction force. So when trying to grasp the block, it may overload sometime. Also when using the swap mode to grasp the block, the four bar gripper will take up extra space, which may collide with other blocks. So we designed a second gripper.  
@@ -177,7 +188,9 @@ Forward kinematics refers to the use of the kinematic equations of a robot to de
 
 DH table:
 
-![alt text][image_DH_table]
+<p align="center">
+  <img src="./misc/DH_table.png" width="550"/>
+</p>
 
 ## Model for Inverse Kinematics
 In most cases, we want the arm robot to move to the given position to pick up blocks. Then we need inverse kinematics to determine the values of the joint angle variables given the end effector’s position and orientation. In this case, we can use geometric decoupling to consider the position and orientation problems independently, and we can get closed form solution. Due to our gripper’s flexibility with two additional wrist DOF, we design three inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirements.

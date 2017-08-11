@@ -1680,21 +1680,10 @@ class Gui(QtGui.QMainWindow):
             self.rex.joint_angles[1] = self.record_S_cubic[i]#self.ui.sldrShoulder.value()*D2R
             self.rex.joint_angles[2] = self.record_E_cubic[i]#self.ui.sldrElbow.value()*D2R
             self.rex.joint_angles[3] = self.record_W_cubic[i]#self.ui.sldrWrist.value()*D2R
-            """
-            self.rex.speed_list[0] = float(self.record_B_cubic_speed[i])#self.ui.sldrBase.value()*D2R
-            self.rex.speed_list[1] = float(self.record_S_cubic_speed[i])#self.ui.sldrShoulder.value()*D2R
-            self.rex.speed_list[2] = float(self.record_E_cubic_speed[i])#self.ui.sldrElbow.value()*D2R
-            self.rex.speed_list[3] = float(self.record_W_cubic_speed[i])#self.ui.sldrWrist.value()*D2R
-            """
+
             self.rex.num_joints = 4
             self.rex.cmd_publish()
             while True:
-                
-            #    print "%.2f,%.2f,%.2f,%.2f"%(abs(float(self.record_B_cubic[i])-self.rex.joint_angles_fb[0]),\
-            #    abs(float(self.record_S_cubic[i])-self.rex.joint_angles_fb[1]),\
-            #    abs(float(self.record_E_cubic[i])-self.rex.joint_angles_fb[2]),\
-              #  abs(float(self.record_W_cubic[i])-self.rex.joint_angles_fb[3]))
-                
                 time.sleep(0.00001)
             	if abs(self.record_B_cubic[i]-self.rex.joint_angles_fb[0])<tol_check and\
             	abs(self.record_S_cubic[i]-self.rex.joint_angles_fb[1])<tol_check and\
@@ -1803,11 +1792,7 @@ class Gui(QtGui.QMainWindow):
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('z')
-        #ax = plt.axes(projection='3d')
-        #ax.scatter(x_normal,y_normal,z_normal,'-b')
-        #plt.plot(x_normal,y_normal,z_normal,'r-o')
-      #  plt.plot(time_normal,x_normal,'r-*',time_normal,y_normal,'b-*',time_normal,z_normal,'g-*')
-       
+
         plt.legend()
         plt.title('movement traj.')
         plt.savefig("coordinates_3D.png")
@@ -1821,19 +1806,7 @@ class Gui(QtGui.QMainWindow):
         a1 = v0
         a2 = (-vf*tf-2*v0*tf + 3*qf - 3*q0)/(tf)**2
         a3 = (vf*tf+v0*tf - 2*qf + 2*q0)/(tf)**3
-
-      #  a0 = float(q0)
-     #   a1 = float(v0)
-       # a2 = (-float(vf)*float(tf)-2*float(v0)*float(tf) + 3*float(qf) - 3*float(q0))/(tf)**2
-       # a3 = (float(vf)*float(tf)+float(v0)*float(tf) - 2*float(qf) + 2*float(q0))/(tf)**3
-
         cubic_temp = []
-        #cubic_temp.append(float(q0))
-        #cubic_temp.append(float(v0))
-        #cubic_temp.append((3*(float(qf) -float(q0))-(2*float(v0)+float(vf))*(float(tf)-float(t0)))/(float(tf)-float(t0))/(float(tf)-float(t0)))
-       # cubic_temp.append((2*(float(q0)-float(qf))+(float(v0)+float(vf))*(float(tf)-float(t0)))/(float(tf)-float(t0))/(float(tf)-float(t0)/(float(tf)-float(t0))))
-       
-       # print "a0-3:",a0,a1,a2,a3
         for i in range(split_num):
             t_i = i*delta_t
             angle.append(a0+a1*t_i+a2*t_i**2+a3*t_i**3)

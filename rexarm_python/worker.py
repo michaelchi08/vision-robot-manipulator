@@ -82,8 +82,6 @@ class Worker:
         tcp_send_msg.connect((self.url,self.master_port))
         tcp_send_msg.sendall(str.encode(msg_finish_json))
         tcp_send_msg.close()
-
-
     	#print "worker_img:",self.worker_num,"ready.\n"
     def send_heartbeat(self):
     	msg_hb = {"msg type":"heartbeat","worker num":self.worker_num}
@@ -117,13 +115,11 @@ class Worker:
             abs(cmd[4]-self.rex.joint_angles_fb[4])<self.rex.tol_check_cmd and\
             abs(cmd[5]-self.rex.joint_angles_fb[5])<self.rex.tol_check_cmd and\
             abs(cmd[6]-self.rex.joint_angles_fb[6])<self.rex.tol_check_cmd:
-                #print "self.rex.joint_angles_fb",self.rex.joint_angles_fb,"\nmotor_angle",motor_angle
                 break
         self.send_fb2master("arrive")
 
     def arrive(self,block_pose,method):
         #input: pose(x,y,z,angle)  output:cmd to pose_LCM
-        #print "Block position location: ",block_pose
         x = block_pose[0]
         y = block_pose[1]
         z = block_pose[2]
@@ -145,7 +141,6 @@ class Worker:
 
                 motor_angle = self.rex.rexarm_IK(pose,method)
                 if motor_angle != 0:
-                   # print "method 1 pose:",motor_angle
                     ## first calculate base angle
                     self.rex.joint_angles[0]=motor_angle[0]
                     self.rex.cmd_publish()
@@ -161,22 +156,16 @@ class Worker:
                     self.IK_succeed_flag = 1
                     break
         elif method == 2:
-
-            #pose.append(x- (self.rex.l4_swap)*np.sin(angle))
-            #pose.append(y- (self.rex.l4_swap)*np.cos(angle))
-            #pose.append(z + self.rex.l5)
             pose.append(x- (self.rex.l5)*np.sin(angle))
             pose.append(y- (self.rex.l5)*np.cos(angle))
             pose.append(z - self.rex.l4_swap)
             pose.append(angle)
             motor_angle = self.rex.rexarm_IK(pose,method)
             if motor_angle != 0:
-               # print "method 2 pose:",motor_angle
                 ## first calculate base angle
                 self.rex.joint_angles[0]=motor_angle[0]
                 self.rex.cmd_publish()
                 while True:
-                    #print "Turn base.",motor_angle[0],self.rex.joint_angles_fb[0]
                     if abs(motor_angle[0]-self.rex.joint_angles_fb[0])<self.rex.base_rotate_tol:
                         break
                 self.rex.joint_angles[5]=motor_angle[5]
@@ -240,7 +229,6 @@ class Worker:
                 self.rex.joint_angles[5]=motor_angle[5]
                 self.rex.cmd_publish()
                 while True:
-                    #print "Turn base.",motor_angle[0],self.rex.joint_angles_fb[0]
                     if abs(motor_angle[0]-self.rex.joint_angles_fb[0])<self.rex.base_rotate_tol\
                     and abs(motor_angle[5]-self.rex.joint_angles_fb[5])<self.rex.wrist_rotate_tol:
                         break
@@ -279,14 +267,12 @@ class Worker:
         self.rex.joint_angles[1] = 0
         self.rex.joint_angles[2] = 0
         self.rex.joint_angles[3] = 0
-        #self.rex.max_torque=1
         self.rex.cmd_publish()
         while True:
             if abs(self.rex.joint_angles_fb[1])<self.rex.tol_check and\
             abs(self.rex.joint_angles_fb[2])<self.rex.tol_check and\
             abs(self.rex.joint_angles_fb[3])<self.rex.tol_check:
                 print "Break waypoint." 
-                #print "self.rex.joint_angles_fb",self.rex.joint_angles_fb,"\nmotor_angle",motor_angle
                 break
         self.send_fb2master("arrive")
 
@@ -296,8 +282,6 @@ class Worker:
         self.rex.max_torque = 0.6##
         self.rex.joint_angles[6] = self.rex.grab_angle
         self.rex.cmd_publish()
-        #aaaa_thread = threading.Thread(target=self.aaaa)
-        #aaaa_thread.start()
         while True:
             if  self.rex.load_fb[6] > self.rex.grab_load:# and abs(self.rex.grab_angle-self.rex.joint_angles_fb[6])<self.rex.angle_grab_tol:#self.rex.load_fb[6] > self.rex.grab_load and
                 print "Break grab." 

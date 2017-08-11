@@ -9,9 +9,14 @@
 [image_hardware]: ./misc/hardware.png
 [image_hardware2]: ./misc/hardware2.png
 [image_performance]: ./misc/performance.PNG
+[image_cover]: ./misc/cover.png
 
 
 # Multi-process, Multi-threaded System for 6 DOF Robotics RGBD Vision Arm
+
+Robot Arm:
+
+![alt text][image_cover]
 
 The Goal of this project is to design a 6 DOF arm and to develop algorithms for effective task completion under time constraints as well as navigation requirement to determine best possible path. This is achieved by initially constructing a 3D location via Kinect RGBD camera that records synchronized and aligned RGB, depth images. Blob detection computer vision technique is used to locate different blocks. We design three different inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirement.
 
@@ -19,64 +24,79 @@ The Goal of this project is to design a 6 DOF arm and to develop algorithms for 
 ## Task
 
 **Event 1**: Pick n’ place (100 points)
-##### 3 Blocks will be placed on the +y of the board (not stacked) with >2.5cm of space in between
-##### Move the 3 blocks to the other side of the board, at the same location but in -y
-##### 15 points for each block picked
-##### 15 points for each block placed
-##### 2.5 points for each 10s less than 40s it takes to complete the task (up to 10 points)
+
+* 3 Blocks will be placed on the +y of the board (not stacked) with >2.5cm of space in between
+* Move the 3 blocks to the other side of the board, at the same location but in -y
+* 15 points for each block picked
+* 15 points for each block placed
+* 2.5 points for each 10s less than 40s it takes to complete the task (up to 10 points)
+
 
 **Event 2**: Pick n’ stack (100 points)
-##### 3 Blocks will be placed on the +y of the board (not stacked) with >2.5cm of space in between
-##### Move the 3 blocks to the other side of the board and stack them at any location
-##### 15 points for each block picked
-##### 15 points for each block stacked
-##### 2.5 points for each 10s less than 40s it takes to complete the task (up to 10 points)
+
+* 3 Blocks will be placed on the +y of the board (not stacked) with >2.5cm of space in between
+* Move the 3 blocks to the other side of the board and stack them at any location
+* 15 points for each block picked
+* 15 points for each block stacked
+* 2.5 points for each 10s less than 40s it takes to complete the task (up to 10 points)
+
 
 **Event 3**: Line ‘em up! (150 points)
-##### Blocks will be placed in a specific configuration, some will be stacked (no more than 3 high)
-##### Order the Blocks in a line according to the resistor color code: 
-##### Black Red Orange Yellow Green Blue Violet White 
-##### Blocks must be within 0.5” of one another and within 0.5” of a straight line
-##### 15 points for each block in the correct order (5 if block is out of place)
-##### Up to 30 points for the neatness of the line (judged by instructors)
+
+* Blocks will be placed in a specific configuration, some will be stacked (no more than 3 high)
+* Order the Blocks in a line according to the resistor color code: 
+* Black Red Orange Yellow Green Blue Violet White 
+* Blocks must be within 0.5” of one another and within 0.5” of a straight line
+* 15 points for each block in the correct order (5 if block is out of place)
+* Up to 30 points for the neatness of the line (judged by instructors)
+
 
 **Event 4**: Stack ‘em high! (150 points)
-##### Blocks will be placed in a specific configuration, some will be stacked (no more than 3 high)
-##### Order The Blocks in a stack according to the resistor color code: 
-##### Black Red Orange Yellow Green Blue Violet White 
-##### 15 points for each block in the correct order (5 if block is out of space)
-##### 5 points for each 20s less than 120s it takes to complete the stack (up to 30 points)
+
+* Blocks will be placed in a specific configuration, some will be stacked (no more than 3 high)
+* Order The Blocks in a stack according to the resistor color code: 
+* Black Red Orange Yellow Green Blue Violet White 
+* 15 points for each block in the correct order (5 if block is out of space)
+* 5 points for each 20s less than 120s it takes to complete the stack (up to 30 points)
+
 
 **Event 5**: Ancient Robotic Builder (200+ points)
-##### Blocks will be placed randomly on the board
-##### More blocks may be added at any time
-##### The rexarm must build a 2D pyramid as wide and tall as it can, color does not matter
-##### You have 300s (5m) to build the pyramid
-##### Each complete level of the pyramid completed before the structure collapses, time runs out, or the bot can no longer place blocks will score 50 points. 
+
+* Blocks will be placed randomly on the board
+* More blocks may be added at any time
+* The rexarm must build a 2D pyramid as wide and tall as it can, color does not matter
+* You have 300s (5m) to build the pyramid
+* Each complete level of the pyramid completed before the structure collapses, time runs out, or the bot can no longer place blocks will score 50 points. 
 
 
 ## Hardware Architecture
 
 Hardware Architecture:
-![alt text][image_hardware] 
+
+![alt text][image_hardware]
+
 Hardware Connection:
+
 ![alt text][image_hardware2] 
 
 ## Software Architecture
+
 In this project, we use multi-process, multi-threaded system to handle different tasks simultaneously with much less time than normal single thread in main function. We create the software architecture to run and communicate the command more efficiently, and build the control decision making architecture to make the task running in a more logical and systematical way.
 
 The software system could manipulate several robotics corporately in one or several remote computers during the same time and have the safe mechanism, both in communication channel check and subsystem condition check, to guarantee every task is executed successfully. Unless all the processes (on all the computers) or all the actuator (in this situation, the robotic arm) die, the task will be finished. This parallel computation framework is designed to handle much more heavy tasks in the same time, even we only use a small part of its potential in this project. 
 
-* **Master process ** manages the jobs, distributes work and assigns them to worker process, and handles heartbeat check.
+* **Master process** manages the jobs, distributes work and assigns them to worker process, and handles heartbeat check.
 
-* **Worker process ** wait for commands from the master process, and then perform tasks based on given input arguments.
+* **Worker process** wait for commands from the master process, and then perform tasks based on given input arguments.
 
 Software Architecture:
+
 ![alt text][image_multi_process_structure] 
 
 The master process first creates a thread to initialize worker communication channel parameters and start a thread to build all the worker processes. Then the master will start job job listen thread to listen signals from worker process, and heartbeat listen thread to listen heartbeat from worker process. When master process creates new worker processes, these new processes start their own heartbeat thread, and keep listening on master TCP channel to receive command. Once worker process receives task command, they will execute these tasks and send task status feedback signal to master TCP listener. 
 
 Functions logic chart:
+
 ![alt text][image_multi_function_chart] 
 
 [Python main function](https://github.com/AaronWzh/vision_arm_robot/tree/master/rexarm_python). 
@@ -92,21 +112,22 @@ The system is designed to setup several processes in the same lab computer to do
 We were also considering all the image processing job in the worker process to reduce the workload of master process, but the GUI system in main process still need to handle the kinect image, so there would be a conflict if we try to call the kinect image obtaining function in different process at the same time. Since the image processing takes very short time (in our algorithm, less than 0.1s), we decided to keep the image processing part in main process. Since the speed bottleneck is the arm motion part, we put more energy in the dynamic motion planning.
 
 
-##Communication
+## Communication
+
 The communication in this system uses TCP (Transmission Control Protocol) and UDP (User Datagram Protocol). A socket creates and manages a TCP/UDP connection, and all sockets use a specific port. Sockets can be used to send data to a specific port, and to listen for data on a specific port. In this project, we use TCP for all communication on the main thread (like processes status listening, job assigning, and feedback sending), and UDP for all other communication (here, specifically heartbeat messages). 
 
-`TCP` guarantees the recipient will receive the packets in order by numbering them. TCP is reliable. All packets sent with TCP are tracked so no data is lost or corrupted in transit. Packets using `UDP` are just sent to the recipient without error checking. The sender does not wait to make sure the recipient receive the packet. UDP is not very reliable when the communication noise is obvious, but it is faster than TCP. So in our project, we use TCP to mark the status of each process and do the job assignment and feedback return, and only use UDP to track heartbeat of each process.
+TCP guarantees the recipient will receive the packets in order by numbering them. TCP is reliable. All packets sent with TCP are tracked so no data is lost or corrupted in transit. Packets using UDP are just sent to the recipient without error checking. The sender does not wait to make sure the recipient receive the packet. UDP is not very reliable when the communication noise is obvious, but it is faster than TCP. So in our project, we use TCP to mark the status of each process and do the job assignment and feedback return, and only use UDP to track heartbeat of each process.
 
 For the communication data type, We use JSON as information package language for TCP and UDP. JSON (JavaScript Object Notation) is a lightweight data-interchange format. Since the JSON format is text only, it can easily be sent to and from a server, and used as a data format by any programming language.
 
 All the massages in master and worker processes are packaged as a dictionary data structure we defined, and after jsonized, they will be sent and received in the TCP/UDP channel port.
 
 
-
 ## State Machine and Decision Making Architecture
 State machine is implemented in master process, and it is for block picking and arranging. But the real execution step is in worker process level, with angle check and speed control. 
 
 Decision making logic block:
+
 ![alt text][image_decision_making] 
 
 The master process level (in red box) decide the structure of one complete step move:
@@ -140,23 +161,29 @@ In this three level decision making architecture, we package basic command and s
 Gripper is a very important part of design to do tasks efficiently. We designed two kinds of grippers, a four bar gripper and a direct motor drive gripper. 
 
 Gripper No.1:
+
 ![alt text][image_gripper]
 
 The four bar one can always be parallel to the blocks easily for us to calibrate the grasp and drop angle. And the claw can move forward when gripping, which can compensate the tolerance of localization. But during the experimentation, we find out that XL-320 motor has very limited torque and OLLO rivet and hole mate are generating relatively large friction force. So when trying to grasp the block, it may overload sometime. Also when using the swap mode to grasp the block, the four bar gripper will take up extra space, which may collide with other blocks. So we designed a second gripper.  
 
 Gripper No.2:
-![alt text][image_gripper]
+
+![alt text][image_gripper2]
+
 The second gripper is driven directly by motor without any middle mechanism part except for gear mate. In the test, this new design fits our grasp mode very well. It can save space up to 40mm along the z axis of the frame fixed on the gripper. And this compact gripper can make the most of the XL-320 torque to grasp more tightly than its predecessor. Additionally, having 2 extra DOF provides more freedom and is perfectly suitable with three different gripping mode (these will be introduced later in inverse kinematic section) which we implement in our target acquisition strategy.
 
 ## Forward Kinematics
 Forward kinematics refers to the use of the kinematic equations of a robot to determine the position and orientation of the end effector given the values for the joint angle variables of the arm robot. We establish the relationship between the base fixed frame and the end effector fixed frame. A commonly used convention for selecting frames of reference for robots is the Denavit-Hartenberg (DH) convention, a convention for the definition of the joint matrices and link matrices to standardize the coordinate frame for spatial linkages. When applying this convention to the arm robot, we can easily get the homogeneous transformation matrix connecting two adjacent links, which consist of four basic transformation matrices. 
+
 DH table:
+
 ![alt text][image_DH_table]
 
 ## Model for Inverse Kinematics
 In most cases, we want the arm robot to move to the given position to pick up blocks. Then we need inverse kinematics to determine the values of the joint angle variables given the end effector’s position and orientation. In this case, we can use geometric decoupling to consider the position and orientation problems independently, and we can get closed form solution. Due to our gripper’s flexibility with two additional wrist DOF, we design three inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirements.
 
-3 modes: Left:sweep;Middle:perpendicular;Right:free pick mode:
+3 modes for IK design: Left:sweep;   Middle:perpendicular;   Right:free pick mode :
+
 ![alt text][image_3modes]
 
 ## Computer Vision
@@ -181,10 +208,15 @@ To explore fast but effective way to complete transitions from picking and placi
 * **Task 5 (Pyramid Builder)**: In this task, blocks are placed randomly on the board. More blocks are added at any time if needed. Final position should resemble a 2D pyramid as wide and tall as it can, regardless to color specification. To make this task fast, we eliminate the color recognition task and only utilize blob detection to calculate the position of block. During training, the coordinates for every consecutive block placing is recorded with respect to the center of the arm. This task also use the intermediate transition stage (mentioned in task 3 and 4) for greater accuracy. 
 
 ## Performance
+
 Performance and Scores:
+
 ![alt text][image_performance]
 
 ## Acknowledgment
+
 This project is based on ROB550 project in University of Michigan.
+
 Code contributors: Zihang Wei (wzih@umich.edu), Cong Fu (congfu@umich.edu)
+
 We would like to thank Prof. Ella Atkins, course instructor, for scientific guidance, Dr. Peter gaskell, lab instructor, for providing us with the proper equipment set and guidance throughout the experimentation process as well as lab sessions.

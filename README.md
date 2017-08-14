@@ -228,8 +228,12 @@ Performance and Scores:
 
 ## Acknowledgment
 
-This project is based on ROB550 project in University of Michigan.
+This project is based on ROB550 in University of Michigan.
 
 Code contributors: Zihang Wei (wzih@umich.edu), Cong Fu (congfu@umich.edu)
 
 We would like to thank Prof. Ella Atkins, course instructor, for scientific guidance, Dr. Peter gaskell, lab instructor, for providing us with the proper equipment set and guidance throughout the experimentation process as well as lab sessions.
+
+## License
+
+vision-robot-manipulator is distributed under the [MIT license](./LICENSE).

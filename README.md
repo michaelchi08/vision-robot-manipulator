@@ -22,7 +22,7 @@ Robot Arm:
 
 The Goal of this project is to design a 6 DOF arm and to develop algorithms for effective task completion under time constraints as well as navigation requirement to determine best possible path. This is achieved by initially constructing a 3D location via Kinect RGBD camera that records synchronized and aligned RGB, depth images. Blob detection computer vision technique is used to locate different blocks. We design three different inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirement.
 
-**Some videos can be seen in links as below :
+**Some videos can be seen in links as below**:
 
 [Pick n’ place (task 1)](https://youtu.be/jCWHdTcl6vk)
 

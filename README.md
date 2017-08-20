@@ -22,6 +22,13 @@ Robot Arm:
 
 The Goal of this project is to design a 6 DOF arm and to develop algorithms for effective task completion under time constraints as well as navigation requirement to determine best possible path. This is achieved by initially constructing a 3D location via Kinect RGBD camera that records synchronized and aligned RGB, depth images. Blob detection computer vision technique is used to locate different blocks. We design three different inverse kinematics modes to make the most of the gripper in order to augment the robot’s workspace to meet different task requirement.
 
+Some videos can be seen in links as below :
+
+[Pick n’ place (task 1)](https://youtu.be/jCWHdTcl6vk)
+[Pick n’ stack (task 2)](https://youtu.be/6HmfDy1Xxbo)
+[Line ‘em up! (task 3)](https://youtu.be/4RllVG_uNFw)
+[Stack ‘em high! (task 4)](https://youtu.be/Uau9bWblsBg)
+[Ancient Robotic Builder (task 5)](https://youtu.be/Hxcq8kO2iAA)
 
 ## Tasks
 
@@ -172,14 +179,17 @@ Gripper is a very important part of design to do tasks efficiently. We designed 
 
 Gripper No.1:
 
-
-![alt text][image_gripper]
+<p align="center">
+  <img src="./misc/gripper.JPG" width="450"/>
+</p>
 
 The four bar one can always be parallel to the blocks easily for us to calibrate the grasp and drop angle. And the claw can move forward when gripping, which can compensate the tolerance of localization. But during the experimentation, we find out that XL-320 motor has very limited torque and OLLO rivet and hole mate are generating relatively large friction force. So when trying to grasp the block, it may overload sometime. Also when using the swap mode to grasp the block, the four bar gripper will take up extra space, which may collide with other blocks. So we designed a second gripper.  
 
 Gripper No.2:
 
-![alt text][image_gripper2]
+<p align="center">
+  <img src="./misc/gripper2.JPG" width="450"/>
+</p>
 
 The second gripper is driven directly by motor without any middle mechanism part except for gear mate. In the test, this new design fits our grasp mode very well. It can save space up to 40mm along the z axis of the frame fixed on the gripper. And this compact gripper can make the most of the XL-320 torque to grasp more tightly than its predecessor. Additionally, having 2 extra DOF provides more freedom and is perfectly suitable with three different gripping mode (these will be introduced later in inverse kinematic section) which we implement in our target acquisition strategy.
 
